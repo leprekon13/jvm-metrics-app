@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jvm-metrics-app
+  labels:
+    app: jvm-metrics-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jvm-metrics-app
+  template:
+    metadata:
+      labels:
+        app: jvm-metrics-app
+    spec:
+      containers:
+        - name: jvm-metrics-app
+          image: jvm-metrics-app:1.0.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
